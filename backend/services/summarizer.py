@@ -1,7 +1,11 @@
 import os
 import json
-import re
+import time
 from google import genai
+from google.api_core.exceptions import ServiceUnavailable, ResourceExhausted
+
+MAX_RETRIES = 3
+MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash']
 
 
 def summarize(transcript):
@@ -21,13 +25,20 @@ Transcript (timestamps shown in seconds):
 
 Return only valid JSON. No markdown fences, no extra keys."""
 
-    response = client.models.generate_content(
-        model='gemini-2.5-flash',
-        contents=prompt,
-    )
-    text = response.text.strip()
-
-    text = re.sub(r'^```(?:json)?\s*', '', text)
-    text = re.sub(r'\s*```$', '', text)
-
-    return json.loads(text)
+    last_exc = None
+    for model in MODELS:
+        for attempt in range(MAX_RETRIES):
+            try:
+                response = client.models.generate_content(
+                    model=model,
+                    contents=prompt,
+                    config={
+                        'response_mime_type': 'application/json',
+                    },
+                )
+                return json.loads(response.text)
+            except (ServiceUnavailable, ResourceExhausted) as e:
+                last_exc = e
+                if attempt < MAX_RETRIES - 1:
+                    time.sleep(2 ** attempt)
+    raise last_exc

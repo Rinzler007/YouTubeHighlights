@@ -122,7 +122,7 @@ export default function LandingPage() {
             the right part?
           </p>
           <p className="text-gray-400 leading-relaxed">
-            YouTubeHighlights extracts the transcript, identifies the key
+            YouTube Highlights extracts the transcript, identifies the key
             moments with timestamps and lets you ask follow-up questions. Get to
             the point instantly.
           </p>
@@ -200,7 +200,7 @@ export default function LandingPage() {
       <footer className="border-t border-gray-200 px-6 py-8">
         <div className="max-w-6xl mx-auto flex items-center justify-between text-xs text-gray-400">
           <span className="bg-gradient-to-r from-sky-600 to-indigo-600 bg-clip-text text-transparent font-semibold">
-            YouTubeHighlights
+            YouTube Highlights
           </span>
           <span>AI-powered video highlights and chat</span>
         </div>
